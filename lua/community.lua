@@ -16,5 +16,6 @@ return {
   -- { import = "astrocommunity.completion.minuet-ai-nvim" },
   { import = "astrocommunity.recipes.vscode" },
   { import = "astrocommunity.colorscheme.catppuccin" },
+  { import = "astrocommunity.editing-support.undotree" },
   -- import/override with your plugins folder
 }
