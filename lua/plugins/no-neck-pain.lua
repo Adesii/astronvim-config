@@ -4,6 +4,16 @@ return {
     version = "*",
     opts = {
       width = 150,
+      mappings = {
+        enabled = true,
+        debug = false,
+        toggle = "<leader>,p",
+        toggleLeftSide = "<leader>,ql",
+        toggleRightSide = "<leader>,qr",
+        widthUp = false,
+        widthDown = false,
+        scratchPad = "<leader>,s",
+      },
       autocmds = {
         enableOnVimEnter = true,
       },

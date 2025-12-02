@@ -42,6 +42,7 @@ return {
         ["<leader>D"] = { '"_d', desc = "Delete to void" },
         Q = "<nop>",
         ["<leader>s"] = { [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], desc = "Replace Hovered" },
+        ["<leader>,"] = { group = "No Neck Pain" },
       },
       v = {
         J = ":m '>+1<CR>gv=gv",
