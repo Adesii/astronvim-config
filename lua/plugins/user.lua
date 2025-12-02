@@ -23,28 +23,20 @@ return {
   --   event = "BufRead",
   --   config = function() require("lsp_signature").setup() end,
   -- },
-  -- -- {
-  --   "folke/snacks.nvim",
-  --   opts = {
-  --     dashboard = {
-  --       preset = {
-  --         header = table.concat({
-  --           " █████  ███████ ████████ ██████   ██████ ",
-  --           "██   ██ ██         ██    ██   ██ ██    ██",
-  --           "███████ ███████    ██    ██████  ██    ██",
-  --           "██   ██      ██    ██    ██   ██ ██    ██",
-  --           "██   ██ ███████    ██    ██   ██  ██████ ",
-  --           "",
-  --           "███    ██ ██    ██ ██ ███    ███",
-  --           "████   ██ ██    ██ ██ ████  ████",
-  --           "██ ██  ██ ██    ██ ██ ██ ████ ██",
-  --           "██  ██ ██  ██  ██  ██ ██  ██  ██",
-  --           "██   ████   ████   ██ ██      ██",
-  --         }, "\n"),
-  --       },
-  --     },
-  --   },
-  -- },
+  {
+    "folke/snacks.nvim",
+    opts = {
+      dashboard = {
+        sections = {
+          { section = "header" },
+          { icon = " ", title = "Keymaps", section = "keys", indent = 2, padding = 1 },
+          { icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
+          { icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
+          { section = "startup" },
+        },
+      },
+    },
+  },
 
   -- You can disable default plugins as follows:
   --{ "max397574/better-escape.nvim", enabled = false },

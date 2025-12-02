@@ -2,17 +2,16 @@ return {
   {
     "huggingface/llm.nvim",
     opts = {
-      keys = {
-        {
-          "<Tab>",
-          function() require("llm.completion").complete() end,
-          mode = "i",
-          desc = "complete",
-        },
-      },
+      accept_keymap = "<S-Tab>",
+      dismiss_keymap = nil,
       backend = "openai",
       url = "http://127.0.0.1:1234",
       model = "qwen2.5.1-coder-7b-instruct",
+      request_body = {
+        parameters = {
+          max_tokens = 60,
+        },
+      },
       fim = {
         enabled = true,
         prefix = "<|fim_prefix|>",
@@ -22,6 +21,23 @@ return {
 
       lsp = {
         bin_path = vim.api.nvim_call_function("stdpath", { "data" }) .. "/mason/bin/llm-ls",
+      },
+    },
+    specs = {
+      {
+        "AstroNvim/astrocore",
+        opts = {
+          options = {
+            g = {
+              ai_accept = function()
+                if require("llm.completion").shown_suggestion then
+                  vim.schedule(require("llm.completion").complete)
+                  return true
+                end
+              end,
+            },
+          },
+        },
       },
     },
   },
@@ -67,19 +83,19 @@ return {
   --     }
   --   end,
   -- },
-  {
-    "Saghen/blink.cmp",
-    optional = true,
-    opts = function(_, opts)
-      if not opts.keymap then opts.keymap = {} end
-      opts.keymap["<Tab>"] = {
-        "snippet_forward",
-        function()
-          if vim.g.ai_accept then return vim.g.ai_accept() end
-        end,
-        "fallback",
-      }
-      opts.keymap["<S-Tab>"] = { "snippet_backward", "fallback" }
-    end,
-  },
+  -- {
+  --   "Saghen/blink.cmp",
+  --   optional = true,
+  --   opts = function(_, opts)
+  --     if not opts.keymap then opts.keymap = {} end
+  --     opts.keymap["<Tab>"] = {
+  --       "snippet_forward",
+  --       function()
+  --         if vim.g.ai_accept then return vim.g.ai_accept() end
+  --       end,
+  --       "fallback",
+  --     }
+  --     opts.keymap["<S-Tab>"] = { "snippet_backward", "fallback" }
+  --   end,
+  -- },
 }
