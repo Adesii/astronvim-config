@@ -8,7 +8,7 @@
 return {
   "AstroNvim/astrocommunity",
   { import = "astrocommunity.pack.lua" },
-  { import = "astrocommunity.pack.godot" },
+  -- { import = "astrocommunity.pack.godot" },
   { import = "astrocommunity.pack.cs" },
   { import = "astrocommunity.pack.rust" },
   { import = "astrocommunity.pack.cpp" },
@@ -17,5 +17,7 @@ return {
   { import = "astrocommunity.recipes.vscode" },
   { import = "astrocommunity.colorscheme.catppuccin" },
   { import = "astrocommunity.editing-support.undotree" },
+  { import = "astrocommunity.motion.harpoon" },
+  { import = "astrocommunity.completion.blink-cmp-tmux" },
   -- import/override with your plugins folder
 }

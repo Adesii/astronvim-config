@@ -83,19 +83,23 @@ return {
   --     }
   --   end,
   -- },
-  -- {
-  --   "Saghen/blink.cmp",
-  --   optional = true,
-  --   opts = function(_, opts)
-  --     if not opts.keymap then opts.keymap = {} end
-  --     opts.keymap["<Tab>"] = {
-  --       "snippet_forward",
-  --       function()
-  --         if vim.g.ai_accept then return vim.g.ai_accept() end
-  --       end,
-  --       "fallback",
-  --     }
-  --     opts.keymap["<S-Tab>"] = { "snippet_backward", "fallback" }
-  --   end,
-  -- },
+  {
+    "Saghen/blink.cmp",
+    optional = true,
+    opts = function(_, opts)
+      opts.completion.keyword = {
+        range = "prefix",
+      }
+      if not opts.keymap then opts.keymap = {} end
+      opts.keymap["<C-Tab>"] = {
+        function(cmp)
+          if cmp.snippet_active() then
+            return cmp.accept()
+          else
+            return cmp.select_and_accept()
+          end
+        end,
+      }
+    end,
+  },
 }

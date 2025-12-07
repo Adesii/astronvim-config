@@ -20,18 +20,37 @@ return {
   -- "andweeb/presence.nvim",
   -- {
   --   "ray-x/lsp_signature.nvim",
+  --
   --   event = "BufRead",
   --   config = function() require("lsp_signature").setup() end,
   -- },
   {
     "folke/snacks.nvim",
+    ---@type snacks.Config
     opts = {
+      picker = {
+        exclude = {
+          "*.uid",
+        },
+      },
       dashboard = {
         sections = {
           { section = "header" },
           { icon = " ", title = "Keymaps", section = "keys", indent = 2, padding = 1 },
           { icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
-          { icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
+          { pane = 2, icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
+          {
+            pane = 2,
+            icon = " ",
+            title = "Git Status",
+            section = "terminal",
+            enabled = function() return Snacks.git.get_root() ~= nil end,
+            cmd = "git status --short --branch --renames",
+            height = 5,
+            padding = 1,
+            ttl = 5 * 60,
+            indent = 3,
+          },
           { section = "startup" },
         },
       },

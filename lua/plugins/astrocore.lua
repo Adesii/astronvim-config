@@ -30,8 +30,12 @@ return {
     mappings = {
       x = {
         ["<leader>P"] = [["_dP]],
+        ["ö"] = { "[", remap = true },
+        ["ä"] = { "]", remap = true },
       },
       n = {
+        ["ö"] = { "[", remap = true },
+        ["ä"] = { "]", remap = true },
         J = "mzJ`z",
         ["<C-d>"] = "<C-d>zz",
         ["<C-u>"] = "<C-u>zz",
@@ -45,6 +49,8 @@ return {
         ["<leader>,"] = { group = "No Neck Pain" },
       },
       v = {
+        ["ö"] = { "[", remap = true },
+        ["ä"] = { "]", remap = true },
         J = ":m '>+1<CR>gv=gv",
         K = ":m '<-2<CR>gv=gv",
 
