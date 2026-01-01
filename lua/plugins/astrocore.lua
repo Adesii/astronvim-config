@@ -1,9 +1,10 @@
 -- if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
 
--- AstroCore provides a central place to modify mappings, vim options, autocommands, and more!
--- Configuration documentation can be found with `:h astrocore`
--- NOTE: We highly recommend setting up the Lua Language Server (`:LspInstall lua_ls`)
---       as this provides autocomplete and documentation while editing
+-- AstroCore provides a central place to modify mappings, vim options,
+-- autocommands, and more! Configuration documentation can be found with `:h
+-- astrocore` NOTE: We highly recommend setting up the Lua Language Server
+-- (`:LspInstall lua_ls`) as this provides autocomplete and documentation while
+-- editing
 
 ---@type LazySpec
 return {
@@ -56,6 +57,12 @@ return {
 
         ["<leader>D"] = { '"_d', desc = "Delete to void" },
         ["<leader>y"] = [["+y]],
+      },
+      i = {
+        ["<C-E>"] = function()
+          local ls = require "luasnip"
+          if ls.choice_active() then ls.change_choice(1) end
+        end,
       },
     },
     -- options = {

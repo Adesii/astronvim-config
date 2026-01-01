@@ -9,13 +9,17 @@
 return {
   "AstroNvim/astrolsp",
   ---@type AstroLSPOpts
-  opts = {
-    config = {
-      ["llm-ls"] = {
-        capabilities = {
-          offsetEncoding = "utf-16",
+  opts = function(plugin, opts)
+    opts.servers = opts.servers or {}
+    table.insert(opts.servers, "slangd")
+
+    opts.config = require("astrocore").extend_tbl(opts.config or {}, {
+      slangd = {
+        cmd = {
+          "slangd",
         },
+        filetypes = { "slang", "shaderslang" },
       },
-    },
-  },
+    })
+  end,
 }

@@ -7,18 +7,14 @@ return {
       backend = "openai",
       url = "http://127.0.0.1:1234",
       model = "qwen2.5.1-coder-7b-instruct",
-      request_body = {
-        parameters = {
-          max_tokens = 60,
-        },
-      },
+
       fim = {
         enabled = true,
         prefix = "<|fim_prefix|>",
         middle = "<|fim_middle|>",
         suffix = "<|fim_suffix|>",
       },
-
+      tokens_to_clear = { "<|cursor|>" },
       lsp = {
         bin_path = vim.api.nvim_call_function("stdpath", { "data" }) .. "/mason/bin/llm-ls",
       },
@@ -88,18 +84,10 @@ return {
     optional = true,
     opts = function(_, opts)
       opts.completion.keyword = {
-        range = "prefix",
+        range = "full",
       }
-      if not opts.keymap then opts.keymap = {} end
-      opts.keymap["<C-Tab>"] = {
-        function(cmp)
-          if cmp.snippet_active() then
-            return cmp.accept()
-          else
-            return cmp.select_and_accept()
-          end
-        end,
-      }
+      opts.list = { selection = { preselect = true } }
+      opts.completion = { documentation = { auto_show = true } }
     end,
   },
 }

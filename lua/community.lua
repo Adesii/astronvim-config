@@ -19,5 +19,8 @@ return {
   { import = "astrocommunity.editing-support.undotree" },
   { import = "astrocommunity.motion.harpoon" },
   { import = "astrocommunity.completion.blink-cmp-tmux" },
+  { import = "astrocommunity.pack.cmake" },
+  { import = "astrocommunity.pack.go" },
+  { import = "astrocommunity.pack.zig" },
   -- import/override with your plugins folder
 }
