@@ -8,7 +8,7 @@
 return {
   "AstroNvim/astrocommunity",
   { import = "astrocommunity.pack.lua" },
-  -- { import = "astrocommunity.pack.godot" },
+  { import = "astrocommunity.pack.godot" },
   { import = "astrocommunity.pack.cs" },
   { import = "astrocommunity.pack.rust" },
   { import = "astrocommunity.pack.cpp" },
