@@ -10,7 +10,12 @@ return {
       "lua",
       "vim",
       "odin",
+      "gdscript",
       -- add more arguments for adding more treesitter parsers
+    },
+    indent = {
+      enabled = true,
+      disable = { "gdscript" },
     },
   },
 }

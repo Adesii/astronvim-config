@@ -9,5 +9,7 @@ return {
     require("luasnip.loaders.from_vscode").lazy_load {
       paths = { "~/.config/nvim/snippets/friendlysnippets/" },
     }
+    opts.history = false
+    opts.delete_check_events = "TextChanged"
   end,
 }

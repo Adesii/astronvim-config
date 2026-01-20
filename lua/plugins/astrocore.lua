@@ -13,12 +13,7 @@ return {
   opts = {
     options = {
       opt = {
-        tabstop = 4,
         scrolloff = 8,
-        shiftwidth = 4,
-        softtabstop = 4,
-        expandtab = true,
-        ---FileManagement---
         swapfile = false,
         backup = false,
         undodir = os.getenv "HOME" .. "/.cache/nvim/undodir",
@@ -35,6 +30,10 @@ return {
         ["ä"] = { "]", remap = true },
       },
       n = {
+        ["<leader>jr"] = {
+          function() require("user.type_renames").rename_params() end,
+          desc = "Rename parameters to more sensible names",
+        },
         ["ö"] = { "[", remap = true },
         ["ä"] = { "]", remap = true },
         J = "mzJ`z",
@@ -48,6 +47,35 @@ return {
         Q = "<nop>",
         ["<leader>s"] = { [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], desc = "Replace Hovered" },
         ["<leader>,"] = { group = "No Neck Pain" },
+        ["<leader>f;"] = {
+          function()
+            -- This uses grep to find words in files but excluding txt,binaries,log etc... that couldn't be part of the code.
+            require("snacks").picker.grep {
+              -- ignored = true,
+              follow = true,
+              ft = { "java", "gdscript", "lua", "csharp", "python", "odin", "rust", "go" },
+            }
+          end,
+          desc = "Find in Programming Language",
+        },
+        ["<leader>f,"] = {
+          function()
+            -- This uses grep to find words in the current file
+            require("snacks").picker.grep {
+              need_search = false,
+              dirs = { vim.api.nvim_buf_get_name(0) },
+              layout = {
+                preset = "ivy",
+              },
+              format = function(item)
+                local ret = { { string.format("%s: ", item.pos[1]), "Conceal" } }
+                require("snacks").picker.highlight.format(item, item.line, ret)
+                return ret
+              end,
+            }
+          end,
+          desc = "Find in Current File",
+        },
       },
       v = {
         ["ö"] = { "[", remap = true },

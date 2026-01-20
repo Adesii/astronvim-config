@@ -14,6 +14,11 @@ return {
     table.insert(opts.servers, "slangd")
 
     opts.config = require("astrocore").extend_tbl(opts.config or {}, {
+      ["llm-ls"] = {
+        capabilities = {
+          offsetEncoding = "utf-16",
+        },
+      },
       slangd = {
         cmd = {
           "slangd",
