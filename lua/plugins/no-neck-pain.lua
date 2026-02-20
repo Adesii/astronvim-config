@@ -1,34 +1,34 @@
 return {
-  {
-    "shortcuts/no-neck-pain.nvim",
-    version = "*",
-    opts = {
-      width = 150,
-      mappings = {
-        enabled = true,
-        debug = false,
-        toggle = "<leader>,p",
-        toggleLeftSide = "<leader>,ql",
-        toggleRightSide = "<leader>,qr",
-        widthUp = false,
-        widthDown = false,
-        scratchPad = "<leader>,s",
-      },
-      autocmds = {
-        enableOnVimEnter = true,
-      },
-      integrations = {
-        NeoTree = {
-          position = "left",
-        },
-        undotree = {
-          position = "left",
-        },
-        dashboard = {
-          enabled = true,
-        },
-      },
-    },
+  -- {
+  --   "shortcuts/no-neck-pain.nvim",
+  --   version = "*",
+  --   opts = {
+  --     width = 150,
+  --     mappings = {
+  --       enabled = true,
+  --       debug = false,
+  --       toggle = "<leader>,p",
+  --       toggleLeftSide = "<leader>,ql",
+  --       toggleRightSide = "<leader>,qr",
+  --       widthUp = false,
+  --       widthDown = false,
+  --       scratchPad = "<leader>,s",
+  --     },
+  --     autocmds = {
+  --       enableOnVimEnter = true,
+  --     },
+  --     integrations = {
+  --       NeoTree = {
+  --         position = "left",
+  --       },
+  --       undotree = {
+  --         position = "left",
+  --       },
+  --       dashboard = {
+  --         enabled = true,
+  --       },
+  --     },
+  --   },
     -- {
     --   "rebelot/heirline.nvim",
     --   opts = function(_, opts)

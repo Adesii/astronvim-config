@@ -51,9 +51,9 @@ return {
           function()
             -- This uses grep to find words in files but excluding txt,binaries,log etc... that couldn't be part of the code.
             require("snacks").picker.grep {
-              -- ignored = true,
+              ignored = true,
               follow = true,
-              ft = { "java", "gdscript", "lua", "csharp", "python", "odin", "rust", "go" },
+              ft = { "java", "gdscript", "lua", "csharp", "python", "rust", "go" },
             }
           end,
           desc = "Find in Programming Language",
@@ -75,6 +75,18 @@ return {
             }
           end,
           desc = "Find in Current File",
+        },
+        --LSP Search Features
+        ["grr"] = { function() require("snacks").picker.lsp_references() end, desc = "Search References" },
+        ["grd"] = { function() require("snacks").picker.lsp_definitions() end, desc = "Go to Definition" },
+        ["grw"] = {
+          function() require("snacks").picker.lsp_workspace_symbols() end,
+          desc = "Workspace Symbols",
+        },
+        ["grD"] = { function() require("snacks").picker.lsp_declarations() end, desc = "Search Declarations" },
+        ["gri"] = {
+          function() require("snacks").picker.lsp_implementations() end,
+          desc = "Search Implementation",
         },
       },
       v = {

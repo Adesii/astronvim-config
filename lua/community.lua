@@ -19,10 +19,11 @@ return {
   { import = "astrocommunity.recipes.vscode" },
   { import = "astrocommunity.colorscheme.catppuccin" },
   { import = "astrocommunity.editing-support.undotree" },
-  { import = "astrocommunity.motion.harpoon" },
-  { import = "astrocommunity.completion.blink-cmp-tmux" },
-  { import = "astrocommunity.pack.cmake" },
-  { import = "astrocommunity.pack.go" },
-  { import = "astrocommunity.pack.zig" },
+  -- { import = "astrocommunity.motion.harpoon" },
+  -- { import = "astrocommunity.completion.blink-cmp-tmux" },
+  { import = "astrocommunity.pack.typescript-all-in-one" },
+  -- { import = "astrocommunity.pack.cmake" },
+  -- { import = "astrocommunity.pack.go" },
+  -- { import = "astrocommunity.pack.zig" },
   -- import/override with your plugins folder
 }

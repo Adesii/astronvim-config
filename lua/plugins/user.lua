@@ -12,7 +12,11 @@ return {
         filtered_items = {
           hide_by_pattern = { "*.uid" },
         },
+        group_empty_dirs = true,
+        scan_mode = "deep",
       },
+      group_empty_dirs = true,
+      scan_mode = "deep",
     },
   },
   -- == Examples of Adding Plugins ==
