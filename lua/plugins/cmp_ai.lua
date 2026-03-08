@@ -50,7 +50,7 @@ return {
   --   },
   -- },
   {
-    "milanglacier/minuet-ai.nvim",
+    dir = "/mnt/8tbhdd/Projects/Programming/nvim/minuet-ai.nvim",
     opts = function(plugin, opts)
       opts.provider = "openai_fim_compatible"
       opts.n_completions = 1
@@ -58,76 +58,73 @@ return {
       opts.virtualtext = {
         auto_trigger_ft = { "*" },
       }
-      -- require("vectorcode").setup {
-      --   -- number of retrieved documents
-      --   n_query = 1,
-      -- }
-      --
-      -- local has_vc, vectorcode_config = pcall(require, "vectorcode.config")
-      -- local vectorcode_cacher = nil
-      -- if has_vc then vectorcode_cacher = vectorcode_config.get_cacher_backend() end
-      --
-      -- -- roughly equate to 2000 tokens for LLM
-      -- local RAG_Context_Window_Size = 8000
-      --
-      -- opts.provider_options = {
-      --   openai_fim_compatible = { -- or codestral
-      --     api_key = "TERM",
-      --     name = "Ollama",
-      --     end_point = "http://127.0.0.1:1234/v1/completions",
-      --     model = "qwen2.5.1-coder-7b-instruct@q6_k_l",
-      --     -- stream = true,
-      --     optional = {
-      --       max_tokens = 256,
-      --       top_p = 0.9,
-      --       stop = { "\n\n", "\n" },
-      --     },
-      --
-      --     template = {
-      --       prompt = function(pref, suff, _)
-      --         local prompt_message = ""
-      --         if has_vc then
-      --           for _, file in ipairs(vectorcode_cacher.query_from_cache(0, { notify = false })) do
-      --             prompt_message = prompt_message .. "<|file_sep|>" .. file.path .. "\n" .. file.document
-      --           end
-      --         end
-      --
-      --         prompt_message = vim.fn.strcharpart(prompt_message, 0, RAG_Context_Window_Size)
-      --
-      --         return prompt_message .. "<|fim_prefix|>" .. pref .. "<|fim_suffix|>" .. suff .. "<|fim_middle|>"
-      --       end,
-      --       suffix = false,
-      --     },
-      --   },
-      --   dependencies = {
-      --     "Davidyz/VectorCode",
-      --   },
-      -- }
       opts.provider_options = {
         openai_fim_compatible = {
+          model = "unsloth/qwen3.5-9b",
           api_key = "TERM",
           name = "Ollama",
           end_point = "http://127.0.0.1:1234/v1/completions",
-          model = "qwen2.5.1-coder-7b-instruct@q6_k_l",
           stream = true,
           optional = {
-            max_tokens = 256,
-            top_p = 0.9,
-            stop = { "\n\n", "\n" },
+            max_tokens = 128,
           },
-          -- template = {
-          --   prompt = function(context_before_cursor, context_after_cursor, _)
-          --     return "<|fim_prefix|>"
-          --       .. context_before_cursor
-          --       .. "<|fim_suffix|>"
-          --       .. context_after_cursor
-          --       .. "<|fim_middle|>"
-          --   end,
-          --   suffix = false,
-          -- },
+        },
+      }
+      opts.presets = {
+        mecury = {
+          context_window = 256,
+          throttle = 1500, -- Increase to reduce costs and avoid rate limits
+          debounce = 600, -- Increase to reduce costs and avoid rate limits
+          provider_options = {
+            openai_fim_compatible = {
+              model = "mercury-coder",
+              end_point = "https://api.inceptionlabs.ai/v1/fim/completions",
+              api_key = "INCEPTION_API_KEY", -- environment variable name
+              stream = true,
+              top_p = 1.0,
+              stop = {},
+            },
+          },
+        },
+        qwen35 = {
+          context_window = 4096,
+          provider_options = {
+            openai_fim_compatible = {
+              model = "qwen3.5-9b",
+              api_key = "TERM",
+              name = "Ollama",
+              end_point = "http://127.0.0.1:1234/v1/completions",
+              stream = true,
+
+              optional = {
+                max_tokens = 128,
+                top_p = 0.95,
+                stop = {},
+              },
+            },
+          },
+        },
+        qwen25 = {
+          provider_options = {
+            openai_fim_compatible = {
+              api_key = "TERM",
+              name = "Ollama",
+              end_point = "http://127.0.0.1:1234/v1/completions",
+              model = "qwen2.5.1-coder-7b-instruct@q6_k_l",
+              stream = true,
+              optional = {
+                max_tokens = 256,
+                top_p = 0.9,
+                stop = { "\n\n", "\n" },
+              },
+            },
+          },
         },
       }
     end,
+    dependencies = {
+      { "nvim-lua/plenary.nvim" },
+    },
 
     specs = {
       {
@@ -137,7 +134,7 @@ return {
             g = {
               ai_accept = function()
                 if require("minuet.virtualtext").action.is_visible() then
-                  vim.schedule(require("minuet.virtualtext").action.accept)
+                  vim.schedule(require("minuet.virtualtext").action.accept_line)
                   return true
                 end
               end,
@@ -145,6 +142,8 @@ return {
           },
         },
       },
+      { "hrsh7th/nvim-cmp", optional = true },
+      { "Saghen/blink.cmp", optional = true },
     },
   },
   {
