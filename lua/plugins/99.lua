@@ -8,7 +8,7 @@ return {
     -- logging mechanisms within 99.  This is for more debugging purposes
     local cwd = vim.uv.cwd()
     local basename = vim.fs.basename(cwd)
-    opts.model = "lmstudio_custom/unsloth/qwen3.5-35b-a3b"
+    opts.model = "lmstudio_custom/unsloth/qwen3.5-9b"
     opts.provider = _99.Providers.OpenCodeProvider
     -- provider = _99.Providers.ClaudeCodeProvider  -- default: OpenCodeProvider
     opts.logger = {
