@@ -20,6 +20,7 @@ return {
   { import = "astrocommunity.recipes.vscode" },
   { import = "astrocommunity.colorscheme.catppuccin" },
   { import = "astrocommunity.editing-support.undotree" },
+  { import = "astrocommunity.file-explorer.yazi-nvim" },
   { import = "astrocommunity.motion.harpoon" },
   -- { import = "astrocommunity.completion.blink-cmp-tmux" },
   { import = "astrocommunity.pack.typescript-all-in-one", ft = "js,ts,typescript,javascript" },

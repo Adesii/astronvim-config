@@ -21,7 +21,7 @@ return {
     diagnostics = {
       virtual_text = true,
       virtual_lines = { current_line = true },
-      update_in_insert = true,
+      update_in_insert = false,
       underline = true,
     },
     options = {
@@ -101,6 +101,12 @@ return {
           function() require("snacks").picker.lsp_implementations() end,
           desc = "Search Implementation",
         },
+        ["<leader>e"] = {
+          function() require("snacks").picker.files() end,
+          desc = "Open Snacks File Picker",
+        },
+        -- File tree to yazi keybinds
+        ["<leader>o"] = { "<Cmd>Yazi Resume<CR>", desc = "Resume Yazi" },
       },
       v = {
         ["ö"] = { "[", remap = true },
