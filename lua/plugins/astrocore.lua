@@ -5,12 +5,25 @@
 -- astrocore` NOTE: We highly recommend setting up the Lua Language Server
 -- (`:LspInstall lua_ls`) as this provides autocomplete and documentation while
 -- editing
-
+local og_virt_text
+local og_virt_line
 ---@type LazySpec
 return {
   "AstroNvim/astrocore",
   ---@type AstroCoreOpts
   opts = {
+    features = {
+      diagnostics = {
+        virtual_lines = true,
+        virtual_text = true,
+      },
+    },
+    diagnostics = {
+      virtual_text = true,
+      virtual_lines = { current_line = true },
+      update_in_insert = true,
+      underline = true,
+    },
     options = {
       opt = {
         scrolloff = 8,
@@ -103,6 +116,42 @@ return {
           local ls = require "luasnip"
           if ls.choice_active() then ls.change_choice(1) end
         end,
+      },
+    },
+    autocmds = {
+      diagnostic_only_virtlines = {
+        {
+          event = { "CursorMoved", "DiagnosticChanged" },
+          callback = function()
+            if not require("astrocore.buffer").is_valid() then return end
+            if og_virt_line == nil then og_virt_line = vim.diagnostic.config().virtual_lines end
+
+            -- ignore if virtual_lines.current_line is disabled
+            if not (og_virt_line and og_virt_line.current_line) then
+              if og_virt_text then
+                vim.diagnostic.config { virtual_text = og_virt_text }
+                og_virt_text = nil
+              end
+              return
+            end
+
+            if og_virt_text == nil then og_virt_text = vim.diagnostic.config().virtual_text end
+
+            local lnum = vim.api.nvim_win_get_cursor(0)[1] - 1
+
+            if vim.tbl_isempty(vim.diagnostic.get(0, { lnum = lnum })) then
+              vim.diagnostic.config { virtual_text = og_virt_text }
+            else
+              vim.diagnostic.config { virtual_text = false }
+            end
+          end,
+        },
+        {
+          event = "ModeChanged",
+          callback = function()
+            if require("astrocore.buffer").is_valid() then pcall(vim.diagnostic.show) end
+          end,
+        },
       },
     },
     -- options = {
