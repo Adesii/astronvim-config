@@ -141,6 +141,7 @@ return {
     opts = {
       auto_integrations = true,
       term_colors = true,
+      compile_path = vim.fn.stdpath "cache" .. "/catppuccin",
       custom_highlights = function(colors)
         return {
           --------------------------------------------------------------------

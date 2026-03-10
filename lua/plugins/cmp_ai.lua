@@ -50,7 +50,7 @@ return {
   --   },
   -- },
   {
-    dir = "/mnt/8tbhdd/Projects/Programming/nvim/minuet-ai.nvim",
+    dir = vim.fn.stdpath "config" .. "/extpluginforks/minuet-ai.nvim",
     opts = function(plugin, opts)
       opts.provider = "openai_fim_compatible"
       opts.n_completions = 1
