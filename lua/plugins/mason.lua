@@ -19,7 +19,6 @@ return {
 
         -- install debuggers
         "debugpy",
-        "ols",
       },
     },
   },
