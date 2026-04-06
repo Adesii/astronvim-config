@@ -25,6 +25,28 @@ return {
         },
         filetypes = { "slang", "shaderslang" },
       },
+      -- omnisharp = {
+      --   cmd = {
+      --     "/home/adesi/.local/share/nvim/mason/bin/OmniSharp",
+      --     "-z", -- https://github.com/OmniSharp/omnisharp-vscode/pull/4300
+      --     "--hostPID",
+      --     tostring(vim.fn.getpid()),
+      --     "DotNet:enablePackageRestore=false",
+      --     "--encoding",
+      --     "utf-8",
+      --     "--languageserver",
+      --   },
+      --   settings = {
+      --     RoslynExtensionsOptions = {
+      --       EnableDecompilationSupport = true,
+      --     },
+      --   },
+      -- },
     })
+    opts.formatting = {
+      disabled = {
+        "lua_ls",
+      },
+    }
   end,
 }

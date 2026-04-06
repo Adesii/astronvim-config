@@ -13,6 +13,10 @@ return {
   ---@type AstroCoreOpts
   opts = {
     features = {
+      large_buf = { size = 1024 * 256, lines = 10000 }, -- set global limits for large files for disabling features like treesitter
+      autopairs = true, -- enable autopairs at start
+      cmp = true, -- enable completion at start
+
       diagnostics = {
         virtual_lines = true,
         virtual_text = true,
@@ -101,12 +105,23 @@ return {
           function() require("snacks").picker.lsp_implementations() end,
           desc = "Search Implementation",
         },
-        ["<leader>e"] = {
-          function() require("snacks").picker.files() end,
-          desc = "Open Snacks File Picker",
-        },
+        -- ["<leader>e"] = {
+        --   function() require("snacks").explorer.open() end,
+        --   desc = "Open Snacks File Picker",
+        -- },
         -- File tree to yazi keybinds
-        ["<leader>o"] = { "<Cmd>Yazi Resume<CR>", desc = "Resume Yazi" },
+        ["<leader>o"] = { "<Cmd>Yazi cwd<CR>", desc = "Resume Yazi" },
+        -- GH integration:
+        ["<leader>gi"] = { function() require("snacks").picker.gh_issue() end, desc = "GitHub Issues (open)" },
+        ["<leader>gI"] = {
+          function() require("snacks").picker.gh_issue { state = "all" } end,
+          desc = "GitHub Issues (all)",
+        },
+        ["<leader>gO"] = { function() require("snacks").picker.gh_pr() end, desc = "GitHub Pull Requests (open)" },
+        ["<leader>gP"] = {
+          function() require("snacks").picker.gh_pr { state = "all" } end,
+          desc = "GitHub Pull Requests (all)",
+        },
       },
       v = {
         ["ö"] = { "[", remap = true },

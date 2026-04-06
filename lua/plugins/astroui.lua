@@ -42,7 +42,7 @@ return {
     "rebelot/heirline.nvim",
     opts = function(_, opts)
       local status = require "astroui.status"
-      local mineut_usage = require "minuet.heirline"
+      -- local mineut_usage = require "minuet.heirline"
 
       opts.statusline = { -- statusline
         hl = { fg = "fg", bg = "bg" },
@@ -54,14 +54,14 @@ return {
         status.component.fill(),
         status.component.cmd_info(),
         status.component.fill(),
-        {
-          provider = function()
-            local mstatus = mineut_usage:get_status()
-            return mstatus.text
-          end,
-          hl = { fg = "fg", bg = "bg" },
-          highlight = "Normal",
-        },
+        -- {
+        --   provider = function()
+        --     local mstatus = mineut_usage:get_status()
+        --     return mstatus.text
+        --   end,
+        --   hl = { fg = "fg", bg = "bg" },
+        --   highlight = "Normal",
+        -- },
         status.component.lsp(),
         status.component.virtual_env(),
         status.component.treesitter(),

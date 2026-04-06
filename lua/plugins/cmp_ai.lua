@@ -1,3 +1,17 @@
+if true then
+  return {
+    "Saghen/blink.cmp",
+    optional = true,
+    opts = function(_, opts)
+      opts.completion.keyword = {
+        range = "full",
+      }
+      opts.list = { selection = { preselect = true } }
+      opts.completion = { documentation = { auto_show = true } }
+    end,
+  }
+end
+
 return {
   -- {
   --   "huggingface/llm.nvim",

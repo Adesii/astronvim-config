@@ -12,7 +12,7 @@ return {
   { import = "astrocommunity.pack.java", ft = "java" },
   { import = "astrocommunity.pack.python", ft = "python" },
   { import = "astrocommunity.pack.kotlin", ft = "kotlin" },
-  { import = "astrocommunity.pack.cs", ft = "csharp" },
+  { import = "astrocommunity.pack.cs" },
   { import = "astrocommunity.pack.rust", ft = "rust" },
   { import = "astrocommunity.pack.cpp" },
   { import = "astrocommunity.recipes.ai" },
