@@ -12,17 +12,18 @@ return {
       large_buf = { size = 1024 * 256, lines = 10000 }, -- set global limits for large files for disabling features like treesitter
       autopairs = true, -- enable autopairs at start
       cmp = true, -- enable completion at start
-      diagnostics = {
-        virtual_lines = true,
-        virtual_text = true,
-      },
+      diagnostics = true,
       highlighturl = true, -- highlight URLs at start
       notifications = true, -- enable notifications at start
     },
-    -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
     diagnostics = {
-      virtual_text = true,
-      underline = true,
+      virtual_lines = {
+        current_line = true,
+      },
+      virtual_text = {
+        current_line = false,
+      },
+      update_in_insert = true,
     },
     -- vim options can be configured here
     options = {
@@ -31,7 +32,7 @@ return {
         number = true, -- sets vim.opt.number
         spell = false, -- sets vim.opt.spell
         signcolumn = "yes", -- sets vim.opt.signcolumn to yes
-        wrap = false, -- sets vim.opt.wrap
+        wrap = true, -- sets vim.opt.wrap
         scrolloff = 8,
         swapfile = false,
         backup = false,
@@ -128,7 +129,7 @@ return {
         --   desc = "Open Snacks File Picker",
         -- },
         -- File tree to yazi keybinds
-        ["<leader>o"] = { "<Cmd>Yazi cwd<CR>", desc = "Resume Yazi" },
+        -- ["<leader>o"] = { "<Cmd>Yazi cwd<CR>", desc = "Resume Yazi" },
         -- GH integration:
         ["<leader>gi"] = { function() require("snacks").picker.gh_issue() end, desc = "GitHub Issues (open)" },
         ["<leader>gI"] = {
@@ -141,6 +142,7 @@ return {
           desc = "GitHub Pull Requests (all)",
         },
       },
+
       v = {
         ["ö"] = { "[", remap = true },
         ["ä"] = { "]", remap = true },
@@ -151,47 +153,22 @@ return {
         ["<leader>y"] = [["+y]],
       },
       i = {
+        ["<C-j>"] = {
+          function() require("minuet.virtualtext").action.next() end,
+        },
+        ["<C-k>"] = {
+          function() require("minuet.virtualtext").action.prev() end,
+        },
         ["<C-E>"] = function()
           local ls = require "luasnip"
           if ls.choice_active() then ls.change_choice(1) end
         end,
+        ["<Tab>"] = {
+          function()
+            if vim.g.ai_accept then return vim.g.ai_accept() end
+          end,
+        },
       },
-    },
-    autocmds = {
-      -- diagnostic_only_virtlines = {
-      --   {
-      --     event = { "CursorMoved", "DiagnosticChanged" },
-      --     callback = function()
-      --       if not require("astrocore.buffer").is_valid() then return end
-      --       if og_virt_line == nil then og_virt_line = vim.diagnostic.config().virtual_lines end
-      --
-      --       -- ignore if virtual_lines.current_line is disabled
-      --       if not (og_virt_line and og_virt_line.current_line) then
-      --         if og_virt_text then
-      --           vim.diagnostic.config { virtual_text = og_virt_text }
-      --           og_virt_text = nil
-      --         end
-      --         return
-      --       end
-      --
-      --       if og_virt_text == nil then og_virt_text = vim.diagnostic.config().virtual_text end
-      --
-      --       local lnum = vim.api.nvim_win_get_cursor(0)[1] - 1
-      --
-      --       if vim.tbl_isempty(vim.diagnostic.get(0, { lnum = lnum })) then
-      --         vim.diagnostic.config { virtual_text = og_virt_text }
-      --       else
-      --         vim.diagnostic.config { virtual_text = false }
-      --       end
-      --     end,
-      --   },
-      --   {
-      --     event = "ModeChanged",
-      --     callback = function()
-      --       if require("astrocore.buffer").is_valid() then pcall(vim.diagnostic.show) end
-      --     end,
-      --   },
-      -- },
     },
   },
 }

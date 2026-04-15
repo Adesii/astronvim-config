@@ -1,4 +1,4 @@
--- if true then return {} end
+if true then return {} end
 local function gd_move_handler(source, destination)
   if not vim.fs.root(source, "project.godot") then return end -- only run in godot projects
   local suffix = source:match "%.gd$" and "uid" or "import"
@@ -74,18 +74,18 @@ return {
           sources = { { name = "quickgd", priority = 750 } },
         },
       },
-      {
-        "Saghen/blink.cmp",
-        optional = true,
-        opts = {
-          sources = {
-            default = { "quickgd" },
-            providers = {
-              quickgd = { name = "quickgd", module = "quickgd.blink", score_offset = 1 },
-            },
-          },
-        },
-      },
+      -- {
+      --   "Saghen/blink.cmp",
+      --   optional = true,
+      --   opts = {
+      --     sources = {
+      --       default = { "quickgd" },
+      --       providers = {
+      --         quickgd = { name = "quickgd", module = "quickgd.blink", score_offset = 1 },
+      --       },
+      --     },
+      --   },
+      -- },
     },
   },
   {

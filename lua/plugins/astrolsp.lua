@@ -12,6 +12,13 @@ return {
   opts = function(plugin, opts)
     opts.servers = opts.servers or {}
     table.insert(opts.servers, "slangd")
+    table.insert(opts.servers, "roslyn_ls")
+    vim.api.nvim_create_autocmd("LspAttach", {
+      callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if client and client.name == "roslyn_ls" then client.server_capabilities.diagnosticProvider = nil end
+      end,
+    })
 
     opts.config = require("astrocore").extend_tbl(opts.config or {}, {
       ["llm-ls"] = {
@@ -25,23 +32,23 @@ return {
         },
         filetypes = { "slang", "shaderslang" },
       },
-      -- omnisharp = {
-      --   cmd = {
-      --     "/home/adesi/.local/share/nvim/mason/bin/OmniSharp",
-      --     "-z", -- https://github.com/OmniSharp/omnisharp-vscode/pull/4300
-      --     "--hostPID",
-      --     tostring(vim.fn.getpid()),
-      --     "DotNet:enablePackageRestore=false",
-      --     "--encoding",
-      --     "utf-8",
-      --     "--languageserver",
-      --   },
-      --   settings = {
-      --     RoslynExtensionsOptions = {
-      --       EnableDecompilationSupport = true,
-      --     },
-      --   },
-      -- },
+      ["roslyn_ls"] = {
+        cmd = {
+          "roslyn-language-server",
+          "--stdio",
+          "--autoLoadProjects",
+          "--logLevel",
+          "Information",
+          "--extensionLogDirectory",
+          vim.fs.joinpath(vim.uv.os_tmpdir(), "roslyn_ls/logs"),
+        },
+        settings = {
+          ["csharp|background_analysis"] = {
+            dotnet_analyzer_diagnostics_scope = "openFiles",
+            dotnet_compiler_diagnostics_scope = "openFiles",
+          },
+        },
+      },
     })
     opts.formatting = {
       disabled = {
