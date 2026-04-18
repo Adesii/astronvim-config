@@ -15,34 +15,78 @@ if vim.g.vscode then return end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
 --   end,
 -- })
 vim.lsp.enable("roslyn_ls", true)
-local luasnip = require "luasnip"
-vim.api.nvim_create_autocmd("InsertLeave", {
-  callback = function()
-    if luasnip.session.current_nodes[vim.api.nvim_get_current_buf()] then luasnip.unlink_current() end
-  end,
-})
-local has_vc, vectorcode_config = pcall(require, "vectorcode.config")
-local vectorcode_cacher = nil
-if has_vc then vectorcode_cacher = vectorcode_config.get_cacher_backend() end
+
 vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function()
-    local bufnr = vim.api.nvim_get_current_buf()
-    require("vectorcode.cacher").utils.async_check(
-      "config",
-      function()
-        vectorcode_cacher.register_buffer(bufnr, {
-          n_query = 10,
-        })
-      end,
-      nil
-    )
+  callback = function(args)
+    local bufnr = args.buf
+    local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+
+    if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion, bufnr) then
+      vim.lsp.inline_completion.enable(true, { bufnr = bufnr })
+      -- vim.notify "inline completion supported"
+      -- Set up keymaps for accepting and switching inline completions
+      vim.keymap.set(
+        "i",
+        "<C-j>",
+        vim.lsp.inline_completion.select,
+        { desc = "LSP: switch inline completion", buffer = bufnr }
+      )
+    end
   end,
-  desc = "Register buffer for VectorCode",
 })
 
-vim.api.nvim_create_autocmd("LspDetach", {
-  callback = function(args)
-    if vectorcode_cacher then vectorcode_cacher.unregister_buffer(args.buf) end
-  end,
-  desc = "Unregister buffer for VectorCode",
-})
+-- vim.lsp.enable("copilot", true)
+
+-- vim.lsp.inline_completion.enable()
+-- vim.lsp.config("vectorcode-server", {
+--   cmd = {
+--     "vectorcode-server",
+--   },
+-- })
+--
+-- vim.lsp.enable("vectorcode_server", true)
+-- local luasnip = require "luasnip"
+-- vim.api.nvim_create_autocmd("InsertLeave", {
+--   callback = function()
+--     if luasnip.session.current_nodes[vim.api.nvim_get_current_buf()] then luasnip.unlink_current() end
+--   end,
+-- })
+
+-- - VectorCode Register
+-- vim.api.nvim_create_autocmd("LspAttach", {
+--   callback = function()
+--     -- Check if vectorcode config module is available
+--     local has_vc, vectorcode_config = pcall(require, "vectorcode.config")
+--     local vectorcode_cacher = nil
+--     if has_vc then vectorcode_cacher = vectorcode_config.get_cacher_backend() end
+--
+--     -- Get the current buffer number
+--     local bufnr = vim.api.nvim_get_current_buf()
+--     -- Async check for config and register the buffer with vectorcode
+--     require("vectorcode.cacher").utils.async_check(
+--       "config",
+--       function()
+--         vectorcode_cacher.register_buffer(bufnr, {
+--           n_query = 5,
+--         })
+--       end,
+--       nil
+--     )
+--   end,
+--   desc = "Register buffer for VectorCode",
+-- })
+--
+-- vim.api.nvim_create_autocmd("LspDetach", {
+--   callback = function(args)
+--     -- Check if vectorcode config module is available
+--     local has_vc, vectorcode_config = pcall(require, "vectorcode.config")
+--     local vectorcode_cacher = nil
+--     if has_vc then vectorcode_cacher = vectorcode_config.get_cacher_backend() end
+--
+--     -- Check if buffer is registered and deregister it
+--     if vectorcode_cacher and vectorcode_cacher.buf_is_registered(vim.api.nvim_get_current_buf()) then
+--       if vectorcode_cacher then vectorcode_cacher.deregister_buffer(args.buf) end
+--     end
+--   end,
+--   desc = "Unregister buffer for VectorCode",
+-- })

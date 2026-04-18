@@ -86,6 +86,51 @@ local MinuetStatus = {
   hl = { fg = "white", bold = true },
 }
 
+local SidekickStatus = {
+  condition = function() return require("sidekick.status").get() ~= nil end,
+
+  provider = function() return " " end,
+
+  hl = function()
+    local status = require("sidekick.status").get()
+    if not status then return end
+
+    if status.kind == "Error" then
+      return "DiagnosticError"
+    elseif status.busy then
+      return "DiagnosticWarn"
+    else
+      return "Special"
+    end
+  end,
+}
+local SidekickCLI = {
+  condition = function() return #require("sidekick.status").cli() > 0 end,
+
+  provider = function()
+    local status = require("sidekick.status").cli()
+    return " " .. (#status > 0 and #status or "")
+  end,
+
+  hl = { fg = "Special" },
+}
+local vectorcode_component = {
+  provider = function()
+    return require("vectorcode.integrations")
+      .heirline({
+        show_job_count = true,
+        component_opts = {},
+      })
+      .provider()
+  end,
+  condition = function()
+    if package.loaded["vectorcode"] == nil then
+      return true
+    else
+      return require("vectorcode.integrations").heirline().condition()
+    end
+  end,
+}
 -- AstroUI provides the basis for configuring the AstroNvim User Interface
 -- Configuration documentation can be found with `:h astroui`
 -- NOTE: We highly recommend setting up the Lua Language Server (`:LspInstall lua_ls`)
@@ -99,29 +144,6 @@ return {
     opts = {
       -- change colorscheme
       colorscheme = "catppuccin-mocha",
-      -- -- AstroUI allows you to easily modify highlight groups easily for any and all colorschemes
-      -- highlights = {
-      --   init = { -- this table overrides highlights in all themes
-      --     -- Normal = { bg = "#000000" },
-      --   },
-      --   astrodark = { -- a table of overrides/changes when applying the astrotheme theme
-      --     -- Normal = { bg = "#000000" },
-      --   },
-      -- },
-      -- -- Icons can be configured throughout the interface
-      -- icons = {
-      --   -- configure the loading of the lsp in the status line
-      --   LSPLoading1 = "⠋",
-      --   LSPLoading2 = "⠙",
-      --   LSPLoading3 = "⠹",
-      --   LSPLoading4 = "⠸",
-      --   LSPLoading5 = "⠼",
-      --   LSPLoading6 = "⠴",
-      --   LSPLoading7 = "⠦",
-      --   LSPLoading8 = "⠧",
-      --   LSPLoading9 = "⠇",
-      --   LSPLoading10 = "⠏",
-      -- },
     },
   },
   {
@@ -129,13 +151,6 @@ return {
     opts = function(_, opts)
       local status = require "astroui.status"
       -- local mineut_usage = require "minuet.heirline"
-      local vectorcode_component = require("vectorcode.integrations").heirline {
-        show_job_count = true,
-        component_opts = {
-          -- put other field of the components here.
-          -- they'll be merged into the final component.
-        },
-      }
 
       opts.statusline = { -- statusline
         hl = { fg = "fg", bg = "bg" },
@@ -144,8 +159,10 @@ return {
         status.component.file_info(),
         status.component.git_diff(),
         status.component.diagnostics(),
-        vectorcode_component,
-        MinuetStatus,
+        SidekickStatus,
+        SidekickCLI,
+        -- vectorcode_component,
+        -- MinuetStatus,
 
         status.component.fill(),
         status.component.cmd_info(),

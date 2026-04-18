@@ -55,7 +55,7 @@ function M.start()
     end,
 
     on_exit = function(_, code, _)
-      if code ~= 0 then notify("llama exited with code " .. code, vim.log.levels.ERROR) end
+      if code ~= 0 then notify("Llama Already Running", vim.log.levels.INFO) end
       job_id = nil
     end,
   })
