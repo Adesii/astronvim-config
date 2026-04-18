@@ -89,7 +89,7 @@ local MinuetStatus = {
 local SidekickStatus = {
   condition = function() return require("sidekick.status").get() ~= nil end,
 
-  provider = function() return " " end,
+  provider = function() return "  " end,
 
   hl = function()
     local status = require("sidekick.status").get()
@@ -109,7 +109,7 @@ local SidekickCLI = {
 
   provider = function()
     local status = require("sidekick.status").cli()
-    return " " .. (#status > 1 and #status or "")
+    return " " .. (#status > 1 and #status or " ") .. " "
   end,
 
   hl = { fg = "white", bold = true },
