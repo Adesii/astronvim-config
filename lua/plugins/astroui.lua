@@ -100,7 +100,7 @@ local SidekickStatus = {
     elseif status.busy then
       return "DiagnosticWarn"
     else
-      return "Special"
+      return { fg = "white", bold = true }
     end
   end,
 }
@@ -109,10 +109,10 @@ local SidekickCLI = {
 
   provider = function()
     local status = require("sidekick.status").cli()
-    return " " .. (#status > 0 and #status or "")
+    return " " .. (#status > 1 and #status or "")
   end,
 
-  hl = { fg = "Special" },
+  hl = { fg = "white", bold = true },
 }
 local vectorcode_component = {
   provider = function()
