@@ -16,7 +16,7 @@ return {
   -- { import = "astrocommunity.pack.rust", ft = "rust" },
   -- { import = "astrocommunity.pack.cpp" },
   { import = "astrocommunity.recipes.ai" },
-  { import = "astrocommunity.ai.sidekick-nvim" },
+  -- { import = "astrocommunity.ai.sidekick-nvim" },
   -- { import = "astrocommunity.completion.minuet-ai-nvim" },
   { import = "astrocommunity.recipes.vscode" },
   { import = "astrocommunity.colorscheme.catppuccin" },

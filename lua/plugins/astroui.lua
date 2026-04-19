@@ -160,8 +160,9 @@ return {
         status.component.git_diff(),
         status.component.diagnostics(),
         SidekickStatus,
-        SidekickCLI,
+        -- SidekickCLI,
         -- vectorcode_component,
+
         -- MinuetStatus,
 
         status.component.fill(),
