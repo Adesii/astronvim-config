@@ -16,12 +16,18 @@ return {
   opts = {
     interactions = {
       cli = {
-        agent = "opencode",
+        agent = "copilot",
         agents = {
           opencode = {
             cmd = "opencode",
             args = {},
             description = "OpenCode Cli",
+            provider = "terminal",
+          },
+          copilot = {
+            cmd = "copilot",
+            args = {},
+            description = "Copilot Cli",
             provider = "terminal",
           },
         },
@@ -32,7 +38,7 @@ return {
       inline = {
         adapter = {
           name = "copilot",
-          model = "gpt4.1",
+          model = "gpt-4.1",
         },
         keymaps = {
           accept_change = {
@@ -56,12 +62,13 @@ return {
         opts.statusline = opts.statusline or {}
         local spinner_symbols = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
         local astroui = require "astroui.status.hl"
-        table.insert(opts.statusline, {
+        table.insert(opts.statusline, 5, {
           static = {
             n_requests = 0,
             spinner_index = 0,
             spinner_symbols = spinner_symbols,
             done_symbol = "✓",
+            timer = nil, -- store timer handle
           },
           init = function(self)
             if self._cc_autocmds then return end
@@ -71,6 +78,25 @@ return {
               callback = function()
                 self.n_requests = self.n_requests + 1
                 vim.cmd "redrawstatus"
+                -- Start timer if not running
+                if not self.timer then
+                  self.timer = vim.loop.new_timer()
+                  self.timer:start(
+                    0,
+                    250,
+                    vim.schedule_wrap(function()
+                      if self.n_requests > 0 then
+                        vim.cmd "redrawstatus"
+                      else
+                        if self.timer then
+                          self.timer:stop()
+                          self.timer:close()
+                          self.timer = nil
+                        end
+                      end
+                    end)
+                  )
+                end
               end,
             })
             vim.api.nvim_create_autocmd("User", {
@@ -78,6 +104,12 @@ return {
               callback = function()
                 self.n_requests = math.max(0, self.n_requests - 1)
                 vim.cmd "redrawstatus"
+                -- Stop timer if no requests left
+                if self.n_requests == 0 and self.timer then
+                  self.timer:stop()
+                  self.timer:close()
+                  self.timer = nil
+                end
               end,
             })
           end,
@@ -91,7 +123,7 @@ return {
               symbol = self.done_symbol
               self.spinner_index = 0
             end
-            return ("%d %s"):format(self.n_requests, symbol)
+            return ("%d %s "):format(self.n_requests, symbol)
           end,
           hl = function() return astroui.filetype_color() end,
         })
@@ -112,8 +144,34 @@ return {
         opts.mappings.v[prefix .. "x"] = { "<cmd>CodeCompanionCLI Ask<cr>", desc = "Toggle cli" }
         opts.mappings.n[prefix .. "p"] = { "<cmd>CodeCompanionActions<cr>", desc = "Open action palette" }
         opts.mappings.v[prefix .. "p"] = { "<cmd>CodeCompanionActions<cr>", desc = "Open action palette" }
-        opts.mappings.n[prefix .. "q"] = { "<cmd>CodeCompanion<cr>", desc = "Open inline assistant" }
-        opts.mappings.v[prefix .. "q"] = { "<cmd>CodeCompanion<cr>", desc = "Open inline assistant" }
+        -- Normal mode mapping for CodeCompanion prompt
+        opts.mappings.n[prefix .. "q"] = {
+          function()
+            local snacks = require "snacks"
+            -- Show input prompt to user
+            snacks.input({
+              prompt = "Ask CodeCompanion: ",
+            }, function(input)
+              -- If input is not empty, run CodeCompanion command with input
+              if input and input ~= "" then vim.cmd("CodeCompanion " .. vim.fn.escape(input, " ")) end
+            end)
+          end,
+          desc = "Open inline assistant with prompt",
+        }
+        -- Visual mode mapping for CodeCompanion prompt
+        opts.mappings.v[prefix .. "q"] = {
+          function()
+            local snacks = require "snacks"
+            -- Show input prompt to user
+            snacks.input({
+              prompt = "Ask CodeCompanion: ",
+            }, function(input)
+              -- If input is not empty, run CodeCompanion command on selected text with input
+              if input and input ~= "" then vim.cmd("'<,'>CodeCompanion " .. vim.fn.escape(input, " ")) end
+            end)
+          end,
+          desc = "Open inline assistant with prompt",
+        }
         opts.mappings.v[prefix .. "a"] = { "<cmd>CodeCompanionChat Add<cr>", desc = "Add selection to chat" }
       end,
     },
