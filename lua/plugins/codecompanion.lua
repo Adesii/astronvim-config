@@ -33,11 +33,14 @@ return {
         },
       },
       chat = {
-        adapter = "copilot",
+        adapter = {
+          name = "copilot_acp",
+          model = "gpt-5-mini",
+        },
       },
       inline = {
         adapter = {
-          name = "copilot",
+          name = "copilot_acp",
           model = "gpt-4.1",
         },
         keymaps = {
@@ -140,8 +143,9 @@ return {
         opts.mappings.v[prefix] = { desc = require("astroui").get_icon("CodeCompanion", 1, true) .. "CodeCompanion" }
         opts.mappings.n[prefix .. "c"] = { "<cmd>CodeCompanionChat Toggle<cr>", desc = "Toggle chat" }
         opts.mappings.v[prefix .. "c"] = { "<cmd>CodeCompanionChat Toggle<cr>", desc = "Toggle chat" }
-        opts.mappings.n[prefix .. "x"] = { "<cmd>CodeCompanionCLI Ask<cr>", desc = "Toggle cli" }
-        opts.mappings.v[prefix .. "x"] = { "<cmd>CodeCompanionCLI Ask<cr>", desc = "Toggle cli" }
+        opts.mappings.n[prefix .. "x"] = { "<cmd>CodeCompanionCLI Ask<cr>", desc = "Toggle cli with prompt" }
+        opts.mappings.n[prefix .. "s"] = { "<cmd>CodeCompanionCLI<cr>", desc = "Toggle cli" }
+        opts.mappings.v[prefix .. "x"] = { "<cmd>CodeCompanionCLI Ask<cr>", desc = "Toggle cli with prompt" }
         opts.mappings.n[prefix .. "p"] = { "<cmd>CodeCompanionActions<cr>", desc = "Open action palette" }
         opts.mappings.v[prefix .. "p"] = { "<cmd>CodeCompanionActions<cr>", desc = "Open action palette" }
         -- Normal mode mapping for CodeCompanion prompt

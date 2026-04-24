@@ -1,4 +1,4 @@
-if true then return {} end -- disable for now
+-- if true then return {} end -- disable for now
 return {
   "Davidyz/VectorCode",
   event = "VeryLazy",
@@ -6,7 +6,7 @@ return {
   dependencies = { "nvim-lua/plenary.nvim" },
   opts = {
     on_setup = {
-      update = false,
+      update = true,
       lsp = true,
     },
     notify = false,
