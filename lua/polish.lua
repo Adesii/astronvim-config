@@ -44,7 +44,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 --   },
 -- })
 --
-vim.lsp.enable("vectorcode_server", true)
+-- vim.lsp.enable("vectorcode-server", true)
 -- local luasnip = require "luasnip"
 -- vim.api.nvim_create_autocmd("InsertLeave", {
 --   callback = function()

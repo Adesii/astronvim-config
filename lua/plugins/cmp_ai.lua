@@ -1,16 +1,72 @@
--- if true then
---   return {
---     "Saghen/blink.cmp",
---     optional = true,
---     opts = function(_, opts)
---       opts.completion.keyword = {
---         range = "full",
---       }
---       opts.list = { selection = { preselect = true } }
---       opts.completion = { documentation = { auto_show = true } }
---     end,
---   }
--- end
+local function accept_completion_per_word(item, mode)
+  local insert_text = item.insert_text
+  if type(insert_text) == "string" then
+    local range = item.range
+    if range then
+      vim.notify(
+        vim.inspect(vim.tbl_keys(range)) .. "Range Keys.  " .. vim.inspect(vim.tbl_values(range)) .. "Range Values"
+      )
+      local lines = vim.split(insert_text, "\n")
+      local bufnr = vim.api.nvim_get_current_buf()
+      local start_row = range[1]
+      local start_col = range[2]
+      local end_row = range[3]
+      local end_col = range[4]
+
+      local current_lines = vim.api.nvim_buf_get_text(bufnr, start_row, start_col, end_row, end_col, {})
+
+      local row = 1
+      while row <= #lines and row <= #current_lines and lines[row] == current_lines[row] do
+        row = row + 1
+      end
+
+      local col = 1
+      while
+        row <= #lines
+        and col <= #lines[row]
+        and row <= #current_lines
+        and col <= #current_lines[row]
+        and lines[row][col] == current_lines[row][col]
+      do
+        col = col + 1
+      end
+
+      local word = string.match(lines[row]:sub(col), "%s*[^%s]%w*")
+      item.insert_text = table.concat(vim.list_slice(lines, 1, row - 1), "\n")
+        .. (row <= #current_lines and "" or "\n")
+        .. (row <= #lines and col <= #lines[row] and lines[row]:sub(1, col - 1) or "")
+        .. word
+    end
+  end
+  return item
+end
+
+local function accept_completion_per_line(item, mode)
+  local insert_text = item.insert_text
+  if type(insert_text) == "string" then
+    local range = item.range
+    if range then
+      local lines = vim.split(insert_text, "\n")
+      local bufnr = vim.api.nvim_get_current_buf()
+      local start_row = range[1]
+      local start_col = range[2]
+      local end_row = range[3]
+      local end_col = range[4]
+
+      local current_lines = vim.api.nvim_buf_get_text(bufnr, start_row, start_col, end_row, end_col, {})
+
+      -- Find the first line that differs
+      local row = 1
+      while row <= #lines and row <= #current_lines and lines[row] == current_lines[row] do
+        row = row + 1
+      end
+
+      -- Accept all lines up to the first differing line
+      item.insert_text = table.concat(vim.list_slice(lines, 1, row), "\n")
+    end
+  end
+  return item
+end
 -- -- roughly equate to 2000 tokens for LLM
 local RAG_Context_Window_Size = 2000
 local gemma4 = {
@@ -143,7 +199,6 @@ return {
   -- },
   {
     "Saghen/blink.cmp",
-    event = "VeryLazy",
     opts = function(_, opts)
       if not opts.keymap then opts.keymap = {} end
       opts.completion.keyword = {
@@ -161,9 +216,11 @@ return {
         },
       }
       opts.keymap["<Tab>"] = {
-        -- "snippet_forward",
+        "snippet_forward",
         function()
-          if vim.g.ai_accept then return vim.g.ai_accept() end
+          local nes = require "sidekick.nes"
+          if nes.have() and (nes.jump() or nes.apply()) then return true end
+          if vim.lsp.inline_completion.get { on_accept = accept_completion_per_line } then return true end
         end,
         "fallback",
       }
