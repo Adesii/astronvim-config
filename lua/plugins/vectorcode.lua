@@ -1,4 +1,4 @@
--- if true then return {} end -- disable for now
+if true then return {} end -- disable for now
 return {
   "Davidyz/VectorCode",
   version = "*", -- optional, depending on whether you're on nightly or release

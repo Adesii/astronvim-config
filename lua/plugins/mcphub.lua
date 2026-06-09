@@ -1,8 +1,9 @@
+if true then return {} end -- disable for now
+
 return {
   "ravitemer/mcphub.nvim",
   dependencies = {
     "nvim-lua/plenary.nvim",
-    "CopilotC-Nvim/CopilotChat.nvim",
   },
   build = "pnpm install -g mcp-hub@latest", -- Installs `mcp-hub` node binary globally
   config = function()

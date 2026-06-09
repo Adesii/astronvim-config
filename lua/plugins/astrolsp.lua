@@ -10,13 +10,38 @@ return {
   "AstroNvim/astrolsp",
   ---@type AstroLSPOpts
   opts = function(plugin, opts)
+    local wgsl_indent_group = vim.api.nvim_create_augroup("wgsl_indent_on_save", { clear = true })
+
     opts.servers = opts.servers or {}
     table.insert(opts.servers, "slangd")
     table.insert(opts.servers, "roslyn_ls")
-    vim.api.nvim_create_autocmd("LspAttach", {
+
+    -- vim.api.nvim_create_autocmd("LspAttach", {
+    --   callback = function(args)
+    --     local client = vim.lsp.get_client_by_id(args.data.client_id)
+    --     if client and client.name == "roslyn" then client.server_capabilities.diagnosticProvider = nil end
+    --   end,
+    -- })
+    vim.treesitter.language.register("wgsl_bevy", "wgsl")
+
+    vim.api.nvim_create_autocmd("FileType", {
+      group = wgsl_indent_group,
+      pattern = { "wgsl", "wgsl_bevy" },
       callback = function(args)
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
-        if client and client.name == "roslyn_ls" then client.server_capabilities.diagnosticProvider = nil end
+        vim.b[args.buf].autoformat = false
+      end,
+    })
+
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      group = wgsl_indent_group,
+      callback = function(args)
+        local ft = vim.bo[args.buf].filetype
+        if ft ~= "wgsl" and ft ~= "wgsl_bevy" then return end
+        if not vim.bo[args.buf].modifiable or vim.bo[args.buf].buftype ~= "" then return end
+
+        local view = vim.fn.winsaveview()
+        vim.cmd("silent keepjumps normal! gg=G")
+        vim.fn.winrestview(view)
       end,
     })
 
@@ -30,17 +55,30 @@ return {
         cmd = {
           "slangd",
         },
-        filetypes = { "slang", "shaderslang" },
+        filetypes = { "slang", "shaderslang", "hlsl", "glsl" },
       },
       ["roslyn_ls"] = {
+        before_init = function(params, config)
+          local root = config.root_dir
+          if not root then return end
+
+          local folder = {
+            uri = vim.uri_from_fname(root),
+            name = root,
+          }
+
+          params.rootUri = folder.uri
+          params.rootPath = root
+          params.workspaceFolders = { folder }
+        end,
         cmd = {
           "roslyn-language-server",
-          "--stdio",
-          "--autoLoadProjects",
           "--logLevel",
           "Information",
           "--extensionLogDirectory",
           vim.fs.joinpath(vim.uv.os_tmpdir(), "roslyn_ls/logs"),
+          "--autoLoadProjects",
+          "--stdio",
         },
         settings = {
           ["csharp|background_analysis"] = {

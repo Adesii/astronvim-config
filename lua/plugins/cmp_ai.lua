@@ -211,20 +211,25 @@ return {
           selection = {
             -- show_and_insert = true,
             preselect = true,
-            auto_insert = true,
+            auto_insert = false,
           },
         },
       }
       opts.keymap["<Tab>"] = {
-        "snippet_forward",
         function()
           local nes = require "sidekick.nes"
           if nes.have() and (nes.jump() or nes.apply()) then return true end
           if vim.lsp.inline_completion.get { on_accept = accept_completion_per_line } then return true end
         end,
+        "snippet_forward",
         "fallback",
       }
-      opts.keymap["<S-Tab>"] = { "snippet_backward", "fallback" }
+      opts.keymap["<S-Tab>"] = {
+        function()
+          if vim.lsp.inline_completion.get() then return true end
+        end,
+        "fallback",
+      }
     end,
   },
   {

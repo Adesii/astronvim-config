@@ -11,6 +11,8 @@ return {
       "vim",
       "odin",
       "gdscript",
+      "wgsl",
+      "wgsl_bevy",
       -- add more arguments for adding more treesitter parsers
     },
     indent = {

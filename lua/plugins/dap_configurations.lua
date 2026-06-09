@@ -25,6 +25,15 @@ return {
           cwd = "${workspaceFolder}",
         },
       }
+      -- Attach to a running process with codelldb
+      dap.configurations.cs = {
+        {
+          type = "codelldb",
+          request = "attach",
+          name = "Attach to process",
+          pid = require("dap.utils").pick_process,
+        },
+      }
     end,
   },
   {

@@ -3,6 +3,30 @@
 -- NOTE: We highly recommend setting up the Lua Language Server (`:LspInstall lua_ls`)
 --       as this provides autocomplete and documentation while editing
 
+local function create_private_gist(text)
+  local file_name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
+  if file_name == "" then file_name = "snippet.txt" end
+
+  vim.system(
+    { "gh", "gist", "create", "-", "--filename", file_name },
+    {
+      text = true,
+      stdin = text,
+    },
+    vim.schedule_wrap(function(result)
+      if result.code ~= 0 then
+        local message = vim.trim(result.stderr ~= "" and result.stderr or "Failed to create gist")
+        vim.notify(message, vim.log.levels.ERROR, { title = "GitHub Gist" })
+        return
+      end
+
+      local url = vim.trim(result.stdout)
+      if url ~= "" then vim.fn.setreg("+", url) end
+      vim.notify("Private gist created: " .. url, vim.log.levels.INFO, { title = "GitHub Gist" })
+    end)
+  )
+end
+
 ---@type LazySpec
 return {
   "AstroNvim/astrocore",
@@ -43,6 +67,10 @@ return {
         hlsearch = false,
         incsearch = true,
         completeopt = "menu,menuone,noselect,popup",
+        -- indent settings
+        autoindent = true,
+        smartindent = true,
+        cindent = false,
       },
     },
     -- Mappings can be configured through AstroCore as well.
@@ -114,6 +142,17 @@ return {
           end,
           desc = "Find in Current File",
         },
+        ["<leader>fdb"] = {
+          -- Search inside bevy examples
+          function()
+            require("snacks").picker.grep {
+              cwd = "/mnt/8tbhdd/Projects/Programming/Rust/bevy/examples",
+              layout = {
+                preset = "ivy",
+              },
+            }
+          end,
+        },
         --LSP Search Features
         ["grr"] = { function() require("snacks").picker.lsp_references() end, desc = "Search References" },
         ["grd"] = { function() require("snacks").picker.lsp_definitions() end, desc = "Go to Definition" },
@@ -143,6 +182,13 @@ return {
           function() require("snacks").picker.gh_pr { state = "all" } end,
           desc = "GitHub Pull Requests (all)",
         },
+        ["<leader>gG"] = {
+          function()
+            local text = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+            create_private_gist(text)
+          end,
+          desc = "Create private gist from file",
+        },
         ["<leader>ji"] = ":CodeCompanionChat<CR>",
         ["<leader>ja"] = ":CodeCompanionActions<CR>",
       },
@@ -154,9 +200,29 @@ return {
         K = ":m '<-2<CR>gv=gv",
 
         ["<leader>D"] = { '"_d', desc = "Delete to void" },
+        ["<leader>gG"] = {
+          function()
+            local register = vim.fn.getreginfo "z"
+            local selection = vim.o.selection
+            vim.o.selection = "inclusive"
+            vim.cmd [[silent normal! "zy]]
+            vim.o.selection = selection
+
+            local text = vim.fn.getreg "z"
+            vim.fn.setreg("z", register)
+
+            if text == "" then
+              vim.notify("No visual selection to gist", vim.log.levels.WARN, { title = "GitHub Gist" })
+              return
+            end
+
+            create_private_gist(text)
+          end,
+          desc = "Create private gist from selection",
+        },
         ["<leader>y"] = [["+y]],
-        ["<leader>ji"] = ":CodeCompanion ",
-        ["<leader>ja"] = ":CodeCompanionChat<CR>",
+        ["<leader>ai"] = ":CodeCompanion ",
+        ["<leader>aa"] = ":CodeCompanionChat<CR>",
       },
       i = {
         -- ["<C-j>"] = {
@@ -169,6 +235,8 @@ return {
           local ls = require "luasnip"
           if ls.choice_active() then ls.change_choice(1) end
         end,
+        -- exit insert mode
+        ["<C-S-F12>"] = "<Esc>",
         -- ["<Tab>"] = {
         --   function(fallback)
         --     local nes = require "sidekick.nes"
