@@ -165,10 +165,38 @@ return {
           function() require("snacks").picker.lsp_implementations() end,
           desc = "Search Implementation",
         },
-        -- ["<leader>e"] = {
-        --   function() require("snacks").explorer.open() end,
-        --   desc = "Open Snacks File Picker",
-        -- },
+        ["<leader>e"] = {
+          function()
+            require("snacks").explorer.open()
+            -- only refresh no neck pain if the snacks explorer is open, otherwise it will cause a flicker when opening the explorer
+            local feedkeys = function(keys, mode)
+              vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, true, true), mode, true)
+            end
+            --Refresh no neck pain after a few frames
+            -- Do this for now by focusing the main buffer and then going back to the explorer after a few frames
+            -- Emulate the <l> keypress to refresh the no neck pain plugin
+            vim.defer_fn(function()
+              if require("snacks").picker.get({ source = "explorer" })[1] then
+                feedkeys("<C-w>p", "n")
+                vim.defer_fn(function() feedkeys("<C-w>p", "n") end, 50)
+              end
+            end, 50)
+          end,
+          desc = "Open Snacks File Picker",
+        },
+        ["<leader>o"] = {
+          function()
+            -- if the snacks explorer is already open, focus it, otherwise open it
+            local Snacks = require "snacks"
+            local explorer = Snacks.picker.get({ source = "explorer" })[1]
+            if explorer then
+              explorer:focus "list"
+            else
+              Snacks.explorer.open()
+            end
+          end,
+          desc = "Resume Snacks Picker",
+        },
         -- File tree to yazi keybinds
         -- ["<leader>o"] = { "<Cmd>Yazi cwd<CR>", desc = "Resume Yazi" },
         -- GH integration:

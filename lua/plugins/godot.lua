@@ -1,4 +1,4 @@
-if true then return {} end
+-- if true then return {} end
 local function gd_move_handler(source, destination)
   if not vim.fs.root(source, "project.godot") then return end -- only run in godot projects
   local suffix = source:match "%.gd$" and "uid" or "import"

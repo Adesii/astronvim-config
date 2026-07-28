@@ -4,7 +4,14 @@
 
 ---@type LazySpec
 return {
-
+  {
+    "WarZone762/geckscript.nvim",
+    config = function()
+      require("geckscript").setup {
+        -- configuration is passed directly to lsp-config
+      }
+    end,
+  },
   {
     "nvim-neo-tree/neo-tree.nvim",
     opts = {

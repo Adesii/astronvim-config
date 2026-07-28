@@ -14,7 +14,7 @@ return {
   -- { import = "astrocommunity.pack.kotlin", ft = "kotlin" },
   -- { import = "astrocommunity.pack.cs-omnisharp" },
   { import = "astrocommunity.pack.rust", ft = "rust" },
-  -- { import = "astrocommunity.pack.cpp" },
+  { import = "astrocommunity.pack.cpp" },
   { import = "astrocommunity.recipes.ai" },
   -- { import = "astrocommunity.ai.sidekick-nvim" },
   -- { import = "astrocommunity.completion.minuet-ai-nvim" },

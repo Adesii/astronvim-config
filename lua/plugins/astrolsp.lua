@@ -23,13 +23,12 @@ return {
     --   end,
     -- })
     vim.treesitter.language.register("wgsl_bevy", "wgsl")
+    vim.treesitter.language.register("ldtk", "json")
 
     vim.api.nvim_create_autocmd("FileType", {
       group = wgsl_indent_group,
       pattern = { "wgsl", "wgsl_bevy" },
-      callback = function(args)
-        vim.b[args.buf].autoformat = false
-      end,
+      callback = function(args) vim.b[args.buf].autoformat = false end,
     })
 
     vim.api.nvim_create_autocmd("BufWritePre", {
@@ -40,7 +39,7 @@ return {
         if not vim.bo[args.buf].modifiable or vim.bo[args.buf].buftype ~= "" then return end
 
         local view = vim.fn.winsaveview()
-        vim.cmd("silent keepjumps normal! gg=G")
+        vim.cmd "silent keepjumps normal! gg=G"
         vim.fn.winrestview(view)
       end,
     })
@@ -56,6 +55,9 @@ return {
           "slangd",
         },
         filetypes = { "slang", "shaderslang", "hlsl", "glsl" },
+      },
+      ["clang_format"] = {
+        filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
       },
       ["roslyn_ls"] = {
         before_init = function(params, config)
