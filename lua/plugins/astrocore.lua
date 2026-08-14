@@ -193,6 +193,18 @@ return {
               explorer:focus "list"
             else
               Snacks.explorer.open()
+              local feedkeys = function(keys, mode)
+                vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, true, true), mode, true)
+              end
+              --Refresh no neck pain after a few frames
+              -- Do this for now by focusing the main buffer and then going back to the explorer after a few frames
+              -- Emulate the <l> keypress to refresh the no neck pain plugin
+              vim.defer_fn(function()
+                if require("snacks").picker.get({ source = "explorer" })[1] then
+                  feedkeys("<C-w>p", "n")
+                  vim.defer_fn(function() feedkeys("<C-w>p", "n") end, 50)
+                end
+              end, 50)
             end
           end,
           desc = "Resume Snacks Picker",
@@ -217,8 +229,19 @@ return {
           end,
           desc = "Create private gist from file",
         },
-        ["<leader>ji"] = ":CodeCompanionChat<CR>",
-        ["<leader>ja"] = ":CodeCompanionActions<CR>",
+        ["<leader>ao"] = {
+          function()
+            Snacks.terminal.toggle("omp", {
+              win = {
+                position = "right",
+                width = 0.4,
+              },
+            })
+          end,
+          desc = "Open OMP Terminal",
+        },
+        -- ["<leader>ji"] = ":CodeCompanionChat<CR>",
+        -- ["<leader>ja"] = ":CodeCompanionActions<CR>",
       },
 
       v = {

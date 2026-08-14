@@ -1,3 +1,5 @@
+if true then return {} end
+
 local prefix = "<Leader>a"
 return {
   "olimorris/codecompanion.nvim",
