@@ -29,5 +29,6 @@ return {
   -- { import = "astrocommunity.pack.cmake" },
   -- { import = "astrocommunity.pack.go" },
   -- { import = "astrocommunity.pack.zig" },
+  { import = "astrocommunity.pack.html-css" },
   -- import/override with your plugins folder
 }

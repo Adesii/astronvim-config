@@ -86,34 +86,6 @@ local MinuetStatus = {
   hl = { fg = "white", bold = true },
 }
 
-local SidekickStatus = {
-  condition = function() return require("sidekick.status").get() ~= nil end,
-
-  provider = function() return "  " end,
-
-  hl = function()
-    local status = require("sidekick.status").get()
-    if not status then return end
-
-    if status.kind == "Error" then
-      return "DiagnosticError"
-    elseif status.busy then
-      return "DiagnosticWarn"
-    else
-      return { fg = "white", bold = true }
-    end
-  end,
-}
-local SidekickCLI = {
-  condition = function() return #require("sidekick.status").cli() > 0 end,
-
-  provider = function()
-    local status = require("sidekick.status").cli()
-    return " " .. (#status > 1 and #status or " ") .. " "
-  end,
-
-  hl = { fg = "white", bold = true },
-}
 local vectorcode_component = {
   provider = function()
     return require("vectorcode.integrations")
@@ -159,8 +131,6 @@ return {
         status.component.file_info(),
         status.component.git_diff(),
         status.component.diagnostics(),
-        SidekickStatus,
-        -- SidekickCLI,
         -- vectorcode_component,
 
         -- MinuetStatus,
