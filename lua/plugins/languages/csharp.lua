@@ -1,6 +1,17 @@
 ---@type LazySpec
 return {
   "AstroNvim/astrolsp",
+  specs = {
+    {
+      "nvim-treesitter/nvim-treesitter",
+      optional = true,
+      opts = function(_, opts)
+        if opts.ensure_installed ~= "all" then
+          opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed, { "c_sharp" })
+        end
+      end,
+    },
+  },
   opts = function(_, opts)
     opts.servers = require("astrocore").list_insert_unique(opts.servers, { "roslyn_ls" })
     opts.config = require("astrocore").extend_tbl(opts.config or {}, {

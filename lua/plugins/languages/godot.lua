@@ -80,10 +80,8 @@ return {
     optional = true,
     opts = function(_, opts)
       if opts.ensure_installed ~= "all" then
-        opts.ensure_installed = require("astrocore").list_insert_unique(
-          opts.ensure_installed,
-          { "gdscript", "glsl", "godot_resource", "c_sharp" }
-        )
+        opts.ensure_installed =
+          require("astrocore").list_insert_unique(opts.ensure_installed, { "gdscript", "glsl", "godot_resource" })
       end
       opts.indent = require("astrocore").extend_tbl(opts.indent or {}, { disable = { "gdscript" } })
     end,

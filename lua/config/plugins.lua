@@ -96,6 +96,29 @@ local profiles = {
       "jay-babu/mason-nvim-dap.nvim",
     },
   },
+  school = {
+    groups = { ai = false },
+    modules = {
+      ["tools.super-productivity"] = false,
+      ["tools.dap"] = false,
+      ["languages.godot"] = false,
+      ["languages.geckscript"] = false,
+      ["languages.shaders"] = false,
+      ["languages.odin"] = false,
+      ["languages.lua"] = false,
+      ["languages.python"] = false,
+      ["languages.rust"] = false,
+      ["languages.cpp"] = false,
+      ["languages.typescript"] = false,
+      ["languages.html-css"] = false,
+    },
+    disabled = {
+      "mfussenegger/nvim-dap",
+      "rcarriga/nvim-dap-ui",
+      "theHamsta/nvim-dap-virtual-text",
+      "jay-babu/mason-nvim-dap.nvim",
+    },
+  },
 }
 
 local M = { profile = vim.env.NVIM_PROFILE or "personal" }

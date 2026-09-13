@@ -31,15 +31,18 @@ Loading order: AstroNvim → selected community packs → local core, UI, editin
 ```sh
 nvim                      # personal (default)
 NVIM_PROFILE=work nvim     # smaller starting point for a work configuration
+NVIM_PROFILE=school nvim   # C# coursework and Markdown class notes
 ```
 
 The personal profile keeps the existing active plugin selections, theme, completion keys and local AI endpoints. Disabled AI experiments remain disabled. Stale always-on CodeCompanion visual shortcuts were removed; its shortcuts now belong only to its disabled plugin spec.
 
 The work profile keeps the editor/UI, completion, snippets, Lua and Python packs. It omits AI (including CursorTab and OMP), the productivity integration, No Neck Pain, debugging, and the extra game/shader/C#/Odin/Rust/C++/web language selections. It is an editable starting point, not a workplace security policy or a separate Neovim installation.
 
-Edit `profiles.work` in `lua/config/plugins.lua` to choose the languages and tools you actually use. Profile module values override the defaults, but a disabled group wins over an enabled module. Restart Neovim to apply changes. Unknown profile names produce an error rather than silently loading personal plugins.
+The school profile keeps the existing Roslyn C# setup, C# syntax parser, Markdown rendering, No Neck Pain, completion, snippets, undo history and the normal editor/UI. It disables all AI, debugging, the productivity integration, and every other language selection. Basic Lua parsing, language-server and formatting tools remain for maintaining this configuration. It adds no dependencies and uses the existing `roslyn-language-server` executable and Markdown parsers.
 
-**Profiles share installed plugins, state and the lockfile by default.** Do not run `:Lazy clean` or `:Lazy sync` in the smaller profile unless you intend to remove plugins used by the personal profile. Updates can also prune lock entries for plugins absent from the active profile. Use the personal profile for dependency maintenance, or use a separate copy for work:
+Edit `profiles.work` or `profiles.school` in `lua/config/plugins.lua` to choose the languages and tools you actually use. Profile module values override the defaults, but a disabled group wins over an enabled module. Restart Neovim to apply changes. Unknown profile names produce an error rather than silently loading personal plugins.
+
+**Profiles share installed plugins, state and the lockfile by default.** Do not run `:Lazy clean` or `:Lazy sync` in the work or school profile unless you intend to remove plugins used by the personal profile. Updates can also prune lock entries for plugins absent from the active profile. Use the personal profile for dependency maintenance, or use a separate copy for work:
 
 ```sh
 # Copy this repository to ~/.config/nvim-work first, then:
@@ -80,4 +83,4 @@ Do not restore per-file `if true then return {} end` guards or another `disabled
 stylua init.lua lua/config lua/plugins
 ```
 
-Use `:Lazy` to inspect the active selection and `:checkhealth` for machine-specific dependencies. Plugin or model downloads and external services are separate from configuration loading; the work profile does not require an AI service.
+Use `:Lazy` to inspect the active selection and `:checkhealth` for machine-specific dependencies. Plugin or model downloads and external services are separate from configuration loading; the work and school profiles do not require an AI service.
