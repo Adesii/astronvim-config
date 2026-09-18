@@ -16,8 +16,6 @@ return {
           },
         },
       }
-      opts.keymap["<Tab>"] = false
-      opts.keymap["<S-Tab>"] = false
     end,
   },
   {

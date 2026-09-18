@@ -34,7 +34,8 @@ local modules = {
   -- Alternative C# setups; enable only one C# implementation at a time.
   ["languages.csharp-ls"] = false,
   ["languages.roslyn-plugin"] = false,
-  ["ai.cursortab"] = true,
+  ["ai.cursortab"] = false,
+  ["ai.minuet"] = true,
   ["ai.omp"] = true,
   ["ai.terminal"] = true,
   ["ai.99"] = false,
