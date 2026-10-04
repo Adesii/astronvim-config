@@ -38,7 +38,7 @@ The personal profile keeps the existing active plugin selections, theme, complet
 
 The work profile keeps the editor/UI, completion, snippets, Lua and Python packs. It omits AI (including Minuet and OMP), the productivity integration, No Neck Pain, debugging, and the extra game/shader/C#/Odin/Rust/C++/web language selections. It is an editable starting point, not a workplace security policy or a separate Neovim installation.
 
-The school profile keeps the existing Roslyn C# setup, C# syntax parser, Markdown rendering, No Neck Pain, completion, snippets, undo history and the normal editor/UI. It disables all AI, debugging, the productivity integration, and every other language selection. Basic Lua parsing, language-server and formatting tools remain for maintaining this configuration. It adds no dependencies and uses the existing `roslyn-language-server` executable and Markdown parsers.
+The school profile keeps the existing Roslyn C# setup, C# syntax parser, Markdown rendering, No Neck Pain, completion, snippets, undo history and the normal editor/UI. It disables all AI, debugging, the productivity integration, and every other language selection. Basic Lua parsing, language-server and formatting tools remain for maintaining this configuration. Roslyn uses `Microsoft.CodeAnalysis.LanguageServer` when available, otherwise the `roslyn-language-server` .NET tool; install one of them separately.
 
 Edit `profiles.work` or `profiles.school` in `lua/config/plugins.lua` to choose the languages and tools you actually use. Profile module values override the defaults, but a disabled group wins over an enabled module. Restart Neovim to apply changes. Unknown profile names produce an error rather than silently loading personal plugins.
 
@@ -50,6 +50,61 @@ NVIM_APPNAME=nvim-work NVIM_PROFILE=work nvim
 ```
 
 `NVIM_APPNAME` gives the work copy its own config/data/state/cache paths. Its first launch installs its selected plugins. Set `NVIM_PROFILE=work` in your work launcher/shell so the copy does not default to the personal profile.
+
+### Native Windows: school and work
+
+Use native Windows Neovim 0.12+ with this checkout at `%LOCALAPPDATA%\nvim`. Do not copy Linux plugin binaries, Mason tools, or compiled parsers to Windows; let Lazy/Mason/Treesitter install Windows versions. WSL is a separate Linux installation, not this setup.
+
+Launch from PowerShell:
+
+```powershell
+$env:NVIM_PROFILE = 'school' # or 'work'
+nvim
+```
+
+For a separate work copy at `%LOCALAPPDATA%\nvim-work`:
+
+```powershell
+$env:NVIM_APPNAME = 'nvim-work'
+$env:NVIM_PROFILE = 'work'
+nvim
+```
+
+These variables affect the current PowerShell session and its child processes. Put them in a dedicated launcher if needed; do not set `NVIM_APPNAME` unless the configuration exists at that app's path. The profile sharing/maintenance warning above applies on Windows too.
+
+Install the following host tools and make sure they are visible on **Neovim's PATH**, then restart the terminal:
+
+| Tool | Used by |
+| --- | --- |
+| Git for Windows | Lazy installation, Git status, pickers |
+| `rg.exe` (ripgrep), `fd.exe` | Text/file searching; `fd` also enables the work profile's Python environment picker |
+| PowerShell, GNU tar, and an archive utility such as 7-Zip | [Mason package installation](https://github.com/mason-org/mason.nvim#requirements) |
+| `curl.exe`, `tar.exe`, Tree-sitter CLI, and a working C compiler | [Treesitter parser installation](https://github.com/nvim-treesitter/nvim-treesitter#requirements); use an MSVC developer shell with the C++ build tools, or another compiler supported by Tree-sitter |
+| GNU-compatible `diff.exe` | Undotree's diff panel; Windows `fc.exe` and PowerShell's `diff` alias are **not** substitutes |
+| Python with `pip`/`venv`, Node.js with npm | Work profile's Python language-server/formatter installations |
+| .NET SDK and Roslyn language server | School profile's C# support |
+
+Git for Windows includes GNU `diff.exe` in its `usr\bin` directory, which the normal Git installer may not add to PATH. Add that directory **after** native Windows tools in the launcher PATH, or install a standalone GNU diff package. Do not replace the editor shell with Bash merely to make `diff` available.
+
+Undotree currently [does not quote temporary filenames](https://github.com/mbbill/undotree/blob/master/autoload/undotree.vim). If your Windows temporary directory contains spaces, launch Neovim with `TEMP` and `TMP` pointing to an existing, writable path without spaces; otherwise its diff panel can fail even when `diff.exe` is installed. This is an upstream limitation, not a persistent-undo storage issue.
+
+Install the school profile's Roslyn .NET tool:
+
+```powershell
+dotnet tool install --global roslyn-language-server --prerelease
+# Needed if the .NET global-tools directory is not already on PATH:
+$env:PATH += ";$env:USERPROFILE\.dotnet\tools"
+```
+
+Alternatively, put the native `Microsoft.CodeAnalysis.LanguageServer.exe` on PATH. Only the existing `roslyn_ls` integration is enabled; do not enable either alternative C# module alongside it. Open a `.cs` file inside a `.csproj`/solution and use `:LspInfo` to check project attachment.
+
+Persistent undo uses Neovim's platform-specific default directory (`:set undodir?`), including `NVIM_APPNAME` isolation. `$HOME` is no longer required to load editor options. Previous undo files under `~/.cache/nvim/undodir` are left untouched but are not read from the new default location. Java package snippets accept both Windows and Unix path separators.
+
+Keep Neovim's native shell defaults. Windows Terminal with a Nerd Font is recommended for the existing icons and key mappings. AstroNvim already skips LuaSnip's optional Unix `make` build on Windows; Blink supports Windows binaries and its Lua fallback, so this configuration does not add a Rust or Make requirement.
+
+After installation, run `:checkhealth`, `:checkhealth mason`, and `:checkhealth nvim-treesitter`; check `:messages` for startup errors. Verify `<leader>fw` searches, `<leader>fu` opens undo history with a diff, and editing a Lua/Python or C# project starts its server. `gh` is optional and only needed for the existing GitHub/gist actions.
+
+Compatibility checks performed on Linux: both complete profiles start with `HOME` unset, persistent undo survives buffer reload, Undotree opens, Windows/Unix Java paths produce the same package declaration, and Roslyn initializes a real C# project and resolves `Console.WriteLine`. Native Windows installation, parser builds, shell behavior, and terminal key handling still require validation on Windows.
 
 ## Disable, remove or add plugins
 
@@ -69,9 +124,10 @@ Do not restore per-file `if true then return {} end` guards or another `disabled
 
 ## Personal integrations and requirements
 
+- Copilot/Sidekick: `lua/plugins/ai/sidekick.lua` integrates native LSP inline completion with Blink. Insert-mode `Tab` jumps forward in an active snippet, otherwise accepts the visible inline suggestion, otherwise inserts normal indentation. Normal-mode `Tab` still jumps to/applies Sidekick next-edit suggestions.
 - Minuet: `lua/plugins/ai/minuet.lua`; upstream inline FIM completion through the local llama.cpp router. CursorTab and the old local Minuet experiment (`ai.cmp_ai`) are disabled. Do not enable multiple inline completion providers together.
 - OMP: `lua/plugins/ai/omp.lua` installs the pinned integration; `ai/terminal.lua` owns `<leader>ao` and requires the `omp` executable.
-- Other AI configurations: retained but untested when enabled. Check their endpoints, dependencies and overlapping `<leader>a` keys before selecting multiple assistants. Copilot remains hard-excluded unless removed from `disabled`.
+- Other AI configurations: retained but untested when enabled. Check their endpoints, dependencies and overlapping `<leader>a` keys before selecting multiple assistants. The separate `copilot.lua` and `copilot.vim` plugins remain hard-excluded; native LSP Copilot completion is not excluded.
 - C#: `languages.csharp` is the current direct Roslyn LSP setup; `csharp-ls` and `roslyn-plugin` are disabled alternatives. Select only one implementation.
 - Gists/GitHub pickers require an authenticated `gh` CLI. The private gist actions upload the current file/selection only when invoked.
 - `<leader>fdb` retains the personal Bevy examples path in `ui/snacks.lua`; it is omitted when the Rust selection is disabled.

@@ -8,7 +8,6 @@ return {
     scrolloff = 8,
     swapfile = false,
     backup = false,
-    undodir = os.getenv "HOME" .. "/.cache/nvim/undodir",
     undofile = true,
     hlsearch = false,
     incsearch = true,

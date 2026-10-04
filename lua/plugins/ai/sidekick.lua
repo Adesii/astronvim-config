@@ -48,18 +48,16 @@ return {
           desc = "Goto/Apply Next Edit Suggestion",
         }
 
-        -- Alternative insert-mode acceptance with native inline completion:
-        -- maps.i["<Tab>"] = {
-        --   function(fallback)
-        --     local nes = require "sidekick.nes"
-        --     if nes.have() and (nes.jump() or nes.apply()) then
-        --       return true
-        --     end
-        --     if vim.lsp.inline_completion.get() then
-        --       return true
-        --     end
-        --   end,
-        -- }
+      end,
+    },
+    {
+      "Saghen/blink.cmp",
+      opts = function(_, opts)
+        opts.keymap["<Tab>"] = {
+          "snippet_forward",
+          function() return vim.lsp.inline_completion.get() end,
+          "fallback",
+        }
       end,
     },
     { "AstroNvim/astroui", opts = { icons = { Sidekick = "", SidekickBrain = "󰧑" } } },

@@ -24,7 +24,7 @@ local function java_package()
   local filepath = vim.fn.expand "%:p"
   if filepath == "" then return {} end
 
-  local parts = vim.split(filepath, "/")
+  local parts = vim.split(filepath, "[/\\]")
   local pkg_parts = {}
   local found_com = false
 

@@ -25,7 +25,8 @@ return {
           params.workspaceFolders = { folder }
         end,
         cmd = {
-          "roslyn-language-server",
+          vim.fn.executable "Microsoft.CodeAnalysis.LanguageServer" == 1 and "Microsoft.CodeAnalysis.LanguageServer"
+            or "roslyn-language-server",
           "--logLevel",
           "Information",
           "--extensionLogDirectory",

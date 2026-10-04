@@ -35,7 +35,7 @@ local modules = {
   ["languages.csharp-ls"] = false,
   ["languages.roslyn-plugin"] = false,
   ["ai.cursortab"] = false,
-  ["ai.minuet"] = true,
+  ["ai.minuet"] = false,
   ["ai.omp"] = true,
   ["ai.terminal"] = true,
   ["ai.99"] = false,
@@ -44,7 +44,7 @@ local modules = {
   ["ai.copilotchat"] = false,
   ["ai.llama"] = false,
   ["ai.mcphub"] = false,
-  ["ai.sidekick"] = false,
+  ["ai.sidekick"] = true,
   ["ai.vectorcode"] = false,
 }
 
