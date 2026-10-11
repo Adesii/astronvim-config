@@ -27,6 +27,7 @@ local modules = {
   ["languages.cpp"] = true,
   ["languages.typescript"] = true,
   ["languages.html-css"] = true,
+  ["languages.unreal_angelscript"] = true,
   ["ai.recipe"] = true,
   ["core.vscode"] = true,
   ["ui.catppuccin"] = true,
