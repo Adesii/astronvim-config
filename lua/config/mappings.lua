@@ -28,6 +28,9 @@ return {
     Q = "<nop>",
     ["<leader>s"] = { [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], desc = "Replace Hovered" },
     ["<leader>gG"] = { function() require("config.gist").file() end, desc = "Create private gist from file" },
+
+    -- Master switch for Copilot, Sidekick, OMP and other AI features
+    ["<Leader>ad"] = { function() require("user.ai_toggle").toggle() end, desc = "Toggle all AI features" },
   },
   v = {
     ["ö"] = { "[", remap = true },

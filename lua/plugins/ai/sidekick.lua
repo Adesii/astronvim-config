@@ -154,7 +154,7 @@ return {
       },
     },
     nes = {
-      enabled = true,
+      enabled = require("user.ai_toggle").is_enabled(),
     },
     copilot = {
       status = {
@@ -175,6 +175,7 @@ return {
       opts = function(_, opts)
         local maps = assert(opts.mappings)
         local prefix = "<Leader>a"
+        local guard = require("user.ai_toggle").guard
         maps.v = maps.v or {}
 
         -- Prompt selection works in both normal and visual mode.
@@ -182,35 +183,36 @@ return {
         maps.v[prefix] = { desc = require("astroui").get_icon("Sidekick", 1, true) .. "AI" }
 
         maps.n[prefix .. "p"] = {
-          function()
+          guard(function()
             local cli = require "sidekick.cli"
             cli.prompt {
               cb = function(_, text)
                 if text then cli.send { name = "somp", text = text } end
               end,
             }
-          end,
+          end),
           desc = "Prompt",
         }
         maps.v[prefix .. "p"] = maps.n[prefix .. "p"]
-        maps.n[prefix .. "c"] = { function() require("sidekick.cli").close { name = "somp" } end, desc = "Close" }
-        maps.n[prefix .. "s"] = { function() require("sidekick.cli").show { name = "somp" } end, desc = "Show" }
+        maps.n[prefix .. "c"] =
+          { guard(function() require("sidekick.cli").close { name = "somp" } end), desc = "Close" }
+        maps.n[prefix .. "s"] = { guard(function() require("sidekick.cli").show { name = "somp" } end), desc = "Show" }
 
         maps.n[prefix .. "n"] = { desc = require("astroui").get_icon("SidekickBrain", 1, true) .. "NES" }
         maps.n[prefix .. "nt"] = {
-          function() require("sidekick.nes").toggle() end,
+          guard(function() require("sidekick.nes").toggle() end),
           desc = "Toggle NES",
         }
         maps.n[prefix .. "ne"] = {
-          function() require("sidekick.nes").enable() end,
+          guard(function() require("sidekick.nes").enable() end),
           desc = "Enable NES",
         }
         maps.n[prefix .. "nd"] = {
-          function() require("sidekick.nes").disable() end,
+          guard(function() require("sidekick.nes").disable() end),
           desc = "Disable NES",
         }
         maps.n[prefix .. "nu"] = {
-          function() require("sidekick.nes").update() end,
+          guard(function() require("sidekick.nes").update() end),
           desc = "Update Suggestions",
         }
 
